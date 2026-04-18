@@ -29,8 +29,9 @@
       align-items: center;          /* Centraliza os filhos horizontalmente */
       justify-content: center;      /* Centraliza os filhos verticalmente */
       font-family: 'Lato', sans-serif; /* Define Lato como fonte padrão do site */
-      overflow: hidden;             /* Esconde barras de rolagem (o conteúdo não ultrapassa a tela) */
+      overflow-x: hidden;           /* Esconde barra de rolagem horizontal */
       user-select: none;            /* Impede que o usuário selecione textos com o mouse */
+      padding: 24px 16px;
     }
 
     /* ========= STARS ========= */
@@ -98,6 +99,7 @@
       z-index: 10;          /* Fica acima das partículas e estrelas */
       cursor: pointer;      /* Exibe a mão ao passar o mouse, indicando que é clicável */
       perspective: 700px;   /* Define a profundidade 3D para animações de rotação (flip da aba) */
+      transform-style: preserve-3d;
     }
 
     .env-wrapper {
@@ -361,6 +363,47 @@
       color: #b03050;         /* Mesmo vermelho rosado do título */
       font-weight: 700;
       text-align: right;      /* Alinhada à direita (como uma assinatura real) */
+    }
+
+    /* ========= RESPONSIVO (MOBILE) ========= */
+    @media (max-width: 400px) {
+      #hint {
+        font-size: 0.68rem;
+        margin-bottom: 28px;
+      }
+      #envelopeContainer {
+        transform: scale(0.84);
+        transform-origin: center center;
+      }
+    }
+
+    @media (max-width: 320px) {
+      #envelopeContainer {
+        transform: scale(0.72);
+        transform-origin: center center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .msg-card {
+        padding: 40px 22px 30px;
+        border-radius: 14px;
+      }
+      .msg-deco {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
+      .msg-greeting {
+        font-size: 1.55rem;
+      }
+      .msg-body {
+        font-size: 1.08rem;
+        line-height: 1.85;
+        margin-bottom: 22px;
+      }
+      .msg-sign {
+        font-size: 1.2rem;
+      }
     }
 
     /* Botão de fechar (X) no canto superior direito do card */
