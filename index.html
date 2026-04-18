@@ -1,0 +1,596 @@
+<!DOCTYPE html><!-- Define o tipo do documento como HTML5 -->
+<html lang="pt-BR"><!-- Raiz do documento; lang="pt-BR" informa ao navegador que o idioma é português do Brasil -->
+<head>
+  <!-- HEAD: metadados e recursos carregados antes de exibir a página -->
+
+  <meta charset="UTF-8"><!-- Define a codificação de caracteres como UTF-8 (suporta acentos e emojis) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Garante que a página se adapte corretamente ao tamanho da tela do dispositivo -->
+  <title>Para você ✨</title><!-- Texto exibido na aba do navegador -->
+
+  <!-- Pré-conecta aos servidores do Google Fonts para acelerar o carregamento das fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Importa as fontes Dancing Script (cursiva) e Lato (sem serifa), em diferentes pesos -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset universal: remove margens, espaçamentos internos e usa box-sizing border-box
+       em todos os elementos e seus pseudo-elementos ::before e ::after */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ========= BACKGROUND ========= */
+    body {
+      min-height: 100vh;            /* Ocupa no mínimo 100% da altura da janela */
+      background: radial-gradient(ellipse at 60% 30%, #3d0f5e 0%, #1a0533 45%, #2b0840 75%, #0d0020 100%);
+      /* Gradiente radial em forma de elipse posicionada a 60% na horizontal e 30% na vertical,
+         indo do roxo claro (#3d0f5e) ao preto-roxo escuro (#0d0020) — cria o fundo estrelado */
+      display: flex;                /* Ativa o layout Flexbox no body */
+      flex-direction: column;       /* Organiza os filhos em coluna (de cima para baixo) */
+      align-items: center;          /* Centraliza os filhos horizontalmente */
+      justify-content: center;      /* Centraliza os filhos verticalmente */
+      font-family: 'Lato', sans-serif; /* Define Lato como fonte padrão do site */
+      overflow: hidden;             /* Esconde barras de rolagem (o conteúdo não ultrapassa a tela) */
+      user-select: none;            /* Impede que o usuário selecione textos com o mouse */
+    }
+
+    /* ========= STARS ========= */
+    #stars {
+      position: fixed;    /* Fixado na tela — não rola com o conteúdo */
+      inset: 0;           /* Atalho para top:0; right:0; bottom:0; left:0 (cobre toda a tela) */
+      pointer-events: none; /* Cliques passam através deste elemento (não interfere na interação) */
+      z-index: 0;         /* Fica atrás de todos os outros elementos */
+    }
+    .star {
+      position: absolute;           /* Posicionado livremente dentro de #stars */
+      background: #fff;             /* Cor branca, simulando uma estrela */
+      border-radius: 50%;           /* Torna o elemento circular */
+      animation: twinkle ease-in-out infinite; /* Aplica a animação "twinkle" em loop infinito */
+    }
+    @keyframes twinkle {
+      /* Animação de piscar das estrelas */
+      0%, 100% { opacity: 0.08; transform: scale(1);   } /* Início e fim: quase invisível, tamanho normal */
+      50%       { opacity: 0.85; transform: scale(1.5); } /* Meio: brilhante e 50% maior */
+    }
+
+    /* ========= FLOATING PARTICLES ========= */
+    #particles {
+      position: fixed;        /* Fixado na tela */
+      inset: 0;               /* Cobre toda a tela */
+      pointer-events: none;   /* Não bloqueia cliques */
+      z-index: 1;             /* Fica acima das estrelas (z-index 0), mas abaixo do conteúdo */
+    }
+    .particle {
+      position: absolute;           /* Posicionado livremente dentro de #particles */
+      bottom: -60px;                /* Começa 60px abaixo da tela (fora do campo de visão) */
+      opacity: 0;                   /* Começa invisível */
+      animation: floatUp linear infinite; /* Sobe continuamente em loop */
+      will-change: transform, opacity;    /* Dica ao navegador para otimizar essas propriedades com GPU */
+    }
+    @keyframes floatUp {
+      /* Animação de subida das partículas (emojis flutuantes) */
+      0%   { transform: translateY(0)      rotate(0deg)   scale(0);   opacity: 0;   } /* Começa no lugar, invisível */
+      8%   { transform: translateY(-8vh)   rotate(20deg)  scale(1);   opacity: 0.7; } /* Aparece rápido e cresce */
+      90%  {                                                           opacity: 0.4; } /* Vai ficando translúcido */
+      100% { transform: translateY(-110vh) rotate(400deg) scale(0.4); opacity: 0;   } /* Sai pelo topo, girando e sumindo */
+    }
+
+    /* ========= HINT TEXT ========= */
+    #hint {
+      position: relative;               /* Posicionado no fluxo normal, mas pode usar z-index */
+      z-index: 10;                      /* Fica acima das estrelas e partículas */
+      color: rgba(255, 195, 220, 0.75); /* Rosa claro com 75% de opacidade */
+      font-size: 0.78rem;               /* Fonte pequena */
+      letter-spacing: 0.22em;           /* Espaçamento entre letras para efeito elegante */
+      text-transform: uppercase;        /* Converte o texto para maiúsculas */
+      margin-bottom: 44px;              /* Espaço abaixo do texto, separando do envelope */
+      animation: breathe 2.4s ease-in-out infinite; /* Animação de "respirar" (pulsar suavemente) */
+      transition: opacity 0.5s;         /* Transição suave ao esconder o texto */
+    }
+    @keyframes breathe {
+      /* Animação de pulsação suave do texto de dica */
+      0%, 100% { opacity: 0.45; } /* Início e fim: semitransparente */
+      50%       { opacity: 1;    } /* Meio: totalmente opaco */
+    }
+
+    /* ========= ENVELOPE CONTAINER ========= */
+    #envelopeContainer {
+      position: relative;   /* Permite usar z-index e serve de referência para filhos absolutos */
+      z-index: 10;          /* Fica acima das partículas e estrelas */
+      cursor: pointer;      /* Exibe a mão ao passar o mouse, indicando que é clicável */
+      perspective: 700px;   /* Define a profundidade 3D para animações de rotação (flip da aba) */
+    }
+
+    .env-wrapper {
+      position: relative;   /* Referência de posicionamento para os filhos absolutos do envelope */
+      width: 340px;         /* Largura fixa do envelope */
+      height: 230px;        /* Altura fixa do envelope */
+      animation: envBounce 3s ease-in-out infinite; /* Envelope flutua suavemente para cima e para baixo */
+      transition: filter 0.3s; /* Transição suave para o efeito de brilho no hover */
+    }
+    /* Quando o mouse passa sobre o container, adiciona sombra colorida ao envelope */
+    #envelopeContainer:hover .env-wrapper { filter: drop-shadow(0 12px 30px rgba(200,80,130,0.45)); }
+    /* Quando o envelope está aberto, para a animação de bounce e remove o cursor de ponteiro */
+    #envelopeContainer.opened .env-wrapper { animation: none; cursor: default; }
+
+    @keyframes envBounce {
+      /* Animação de flutuação vertical do envelope */
+      0%, 100% { transform: translateY(0);    } /* Posição original */
+      50%       { transform: translateY(-8px); } /* Sobe 8px no meio do ciclo */
+    }
+
+    /* Sombra elíptica embaixo do envelope para dar sensação de profundidade */
+    .env-shadow {
+      position: absolute;       /* Posicionado em relação a .env-wrapper */
+      bottom: -18px;            /* Posicionado 18px abaixo do envelope */
+      left: 50%;                /* Começa no centro horizontal */
+      transform: translateX(-50%); /* Ajusta para ficar perfeitamente centralizado */
+      width: 260px;             /* Largura da sombra (menor que o envelope) */
+      height: 18px;             /* Altura fina da sombra */
+      background: rgba(0,0,0,0.35); /* Preto semitransparente */
+      border-radius: 50%;       /* Forma elíptica */
+      filter: blur(12px);       /* Borrado para parecer uma sombra real */
+      z-index: -1;              /* Fica atrás do envelope */
+    }
+
+    /* Corpo principal do envelope (retângulo de papel) */
+    .env-body {
+      position: absolute;   /* Cobre todo o .env-wrapper */
+      inset: 0;             /* top:0; right:0; bottom:0; left:0 */
+      background: linear-gradient(160deg, #fff5ee, #ffeadf); /* Gradiente bege/creme diagonal */
+      border-radius: 3px 3px 8px 8px; /* Cantos levemente arredondados (mais na parte de baixo) */
+      overflow: hidden;     /* Esconde o que sair dos limites arredondados */
+    }
+
+    /* Triângulos decorativos esquerdo e direito (simulam as dobras laterais do envelope) */
+    .env-body::before {
+      content: '';          /* Necessário para pseudo-elementos aparecerem */
+      position: absolute;
+      inset: 0;
+      background:
+        /* Triângulo inferior-direito no canto superior esquerdo */
+        linear-gradient(to bottom-right, transparent 50%, rgba(220,140,110,0.25) 50%) top left  / 170px 115px no-repeat,
+        /* Triângulo inferior-esquerdo no canto superior direito */
+        linear-gradient(to bottom-left,  transparent 50%, rgba(220,140,110,0.25) 50%) top right / 170px 115px no-repeat;
+    }
+
+    /* Aba inferior selada do envelope (triângulo feito com bordas CSS) */
+    .env-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;   /* Posicionado no canto inferior esquerdo */
+      width: 0; height: 0;  /* Elemento sem dimensões (triângulo é criado pelas bordas) */
+      border-left:   170px solid rgba(245,170,130,0.45); /* Borda esquerda forma metade do triângulo */
+      border-right:  170px solid rgba(245,170,130,0.45); /* Borda direita forma a outra metade */
+      border-bottom: 115px solid rgba(230,140,100,0.35); /* Borda inferior forma o pico do triângulo */
+    }
+
+    /* Aba superior do envelope (que abre ao clicar) */
+    .env-flap {
+      position: absolute;
+      top: 0; left: 0;      /* Posicionado no canto superior esquerdo */
+      width: 340px;         /* Mesma largura do envelope */
+      height: 130px;        /* Metade da altura do envelope */
+      background: linear-gradient(170deg, #fad6c0, #f5c0a4); /* Gradiente pêssego */
+      clip-path: polygon(0 0, 100% 0, 50% 84%); /* Recorte triangular: dois cantos superiores e pico ao centro */
+      transform-origin: top center; /* O ponto de rotação é a borda superior central */
+      transform: rotateX(0deg);     /* Começa na posição fechada (plano) */
+      transition: transform 0.72s cubic-bezier(0.4, 0.0, 0.2, 1); /* Animação suave de abertura */
+      z-index: 4;           /* Fica acima do corpo do envelope e da carta */
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12)); /* Sombra sutil abaixo da aba */
+    }
+    /* Quando o container recebe a classe "opened", a aba gira 180° para trás (abre) */
+    #envelopeContainer.opened .env-flap {
+      transform: rotateX(-180deg); /* Gira completamente para abrir */
+      z-index: 2;                  /* Fica atrás da carta que sobe */
+    }
+
+    /* Lacre de cera (emoji de coração/carta) sobre a aba */
+    .env-seal {
+      position: absolute;
+      top: 56px;                    /* Posicionado próximo ao centro vertical da aba */
+      left: 50%;                    /* Centralizado horizontalmente */
+      transform: translateX(-50%);  /* Ajuste de centralização */
+      font-size: 2rem;              /* Tamanho do emoji */
+      z-index: 5;                   /* Fica acima de tudo no envelope */
+      transition: opacity 0.3s ease, transform 0.3s ease; /* Transição suave ao desaparecer */
+      filter: drop-shadow(0 2px 8px rgba(200,50,80,0.5));  /* Brilho rosado ao redor do emoji */
+    }
+    /* Quando aberto, o lacre desaparece e encolhe */
+    #envelopeContainer.opened .env-seal {
+      opacity: 0;                          /* Torna invisível */
+      transform: translateX(-50%) scale(0); /* Encolhe até sumir */
+    }
+
+    /* Papel da carta que fica dentro do envelope (visível como "peek") */
+    .env-letter {
+      position: absolute;
+      bottom: 8px;                  /* Alinhado quase na base do envelope */
+      left: 50%;                    /* Centralizado horizontalmente */
+      transform: translateX(-50%);  /* Ajuste de centralização */
+      width: 290px;                 /* Ligeiramente menor que o envelope */
+      height: 185px;
+      background: linear-gradient(150deg, #fffef6, #fff9f5); /* Branco levemente amarelado */
+      border-radius: 4px;
+      z-index: 3;                   /* Fica entre o corpo e a aba do envelope */
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); /* Sombra suave para dar profundidade */
+      display: flex;
+      flex-direction: column;       /* Linhas decorativas empilhadas verticalmente */
+      justify-content: center;
+      align-items: center;
+      gap: 10px;                    /* Espaçamento entre as linhas decorativas */
+      padding: 20px 24px;
+      transition: transform 0.85s cubic-bezier(0.34, 1.5, 0.64, 1); /* Animação elástica ao subir */
+      transition-delay: 0.42s;     /* Espera a aba abrir antes de a carta subir */
+    }
+    /* Quando o envelope abre, a carta sobe 210px (sai por cima do envelope) */
+    #envelopeContainer.opened .env-letter {
+      transform: translateX(-50%) translateY(-210px);
+    }
+
+    /* Linhas decorativas horizontais dentro da carta (simulam texto) */
+    .letter-line {
+      height: 2px;        /* Linha fina */
+      border-radius: 2px;
+      background: linear-gradient(to right, #f4a0b0, #f8c8a0); /* Gradiente rosa → pêssego */
+      opacity: 0.35;      /* Semitransparente */
+    }
+    /* Cada linha tem uma largura diferente para parecer texto de verdade */
+    .letter-line:nth-child(1) { width: 100%; } /* Primeira linha: comprimento total */
+    .letter-line:nth-child(2) { width: 80%;  } /* Segunda linha: 80% */
+    .letter-line:nth-child(3) { width: 90%;  } /* Terceira linha: 90% */
+    .letter-line:nth-child(4) { width: 65%;  } /* Quarta linha: 65% */
+    .letter-line:nth-child(5) { width: 85%;  } /* Quinta linha: 85% */
+
+    /* ========= MESSAGE OVERLAY ========= */
+    #msgOverlay {
+      position: fixed;        /* Cobre toda a tela independente do scroll */
+      inset: 0;               /* top:0; right:0; bottom:0; left:0 */
+      z-index: 50;            /* Fica acima de todos os elementos da página */
+      display: flex;
+      align-items: center;    /* Centraliza o card verticalmente */
+      justify-content: center;/* Centraliza o card horizontalmente */
+      background: rgba(15, 3, 35, 0); /* Começa transparente */
+      opacity: 0;             /* Invisível inicialmente */
+      pointer-events: none;   /* Não captura cliques quando invisível */
+      transition: background 0.9s ease, opacity 0.4s ease; /* Transição suave ao aparecer */
+    }
+    /* Quando a classe "show" é adicionada, o overlay se torna visível */
+    #msgOverlay.show {
+      background: rgba(15, 3, 35, 0.93); /* Fundo escuro quase opaco */
+      opacity: 1;             /* Totalmente visível */
+      pointer-events: all;    /* Passa a capturar cliques */
+    }
+
+    /* Card branco com a mensagem da carta */
+    .msg-card {
+      position: relative;     /* Permite posicionamento absoluto dos pseudo-elementos */
+      background: linear-gradient(150deg, #fffef6 0%, #fff5ef 100%); /* Fundo branco-creme */
+      border-radius: 18px;    /* Bordas bem arredondadas */
+      padding: 52px 52px 44px;/* Espaçamento interno generoso */
+      max-width: 560px;       /* Largura máxima do card */
+      width: 90%;             /* Em telas menores, ocupa 90% da largura */
+      box-shadow:
+        0 40px 90px rgba(0,0,0,0.45),          /* Sombra grande e profunda abaixo */
+        0 0 0 1px rgba(255,180,200,0.18),       /* Borda sutil rosada */
+        inset 0 1px 0 rgba(255,255,255,0.8);   /* Reflexo interno no topo */
+      transform: scale(0.82) translateY(50px); /* Começa menor e deslocado para baixo */
+      opacity: 0;             /* Invisível inicialmente */
+      transition: all 0.65s cubic-bezier(0.34, 1.4, 0.64, 1); /* Animação elástica ao aparecer */
+      transition-delay: 0.28s;/* Pequeno atraso após o overlay aparecer */
+      overflow: hidden;       /* Garante que o pseudo-elemento não vaze do card */
+    }
+    /* Quando o overlay mostra, o card cresce e sobe até a posição final */
+    #msgOverlay.show .msg-card {
+      transform: scale(1) translateY(0); /* Tamanho e posição normais */
+      opacity: 1;
+    }
+
+    /* Barra colorida decorativa no topo do card */
+    .msg-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; /* Cobre toda a largura do topo */
+      height: 5px;               /* Barra fina */
+      background: linear-gradient(to right, #ff6b9d, #ff8c69, #ffd166, #c77dff);
+      /* Gradiente arco-íris: rosa → laranja → amarelo → roxo */
+      border-radius: 18px 18px 0 0; /* Arredonda apenas os cantos superiores */
+    }
+
+    /* Emoji decorativo em marca d'água no canto inferior direito do card */
+    .msg-card::after {
+      content: '🌸';          /* Emoji de flor */
+      position: absolute;
+      bottom: -30px;          /* Parcialmente fora do card (cortado pelo overflow:hidden) */
+      right: -10px;
+      font-size: 8rem;        /* Enorme para ser uma marca d'água */
+      opacity: 0.04;          /* Quase invisível (4% de opacidade) */
+      pointer-events: none;   /* Não interfere em cliques */
+      transform: rotate(-15deg); /* Leve inclinação decorativa */
+    }
+
+    /* Linha de emojis decorativos acima do saudação */
+    .msg-deco {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 18px;
+      letter-spacing: 0.35em; /* Espaçamento entre os emojis */
+    }
+
+    /* Texto de saudação com efeito máquina de escrever */
+    .msg-greeting {
+      font-family: 'Dancing Script', cursive; /* Fonte cursiva elegante */
+      font-size: 2.1rem;
+      color: #b03050;         /* Vermelho rosado */
+      margin-bottom: 22px;
+      font-weight: 700;
+      overflow: hidden;       /* Oculta o texto que ainda não "digitou" */
+      white-space: nowrap;    /* Impede quebra de linha durante a animação */
+      border-right: 2px solid #b03050; /* Cursor piscante (barra vertical) */
+      width: 0;               /* Começa sem largura (texto oculto) */
+      animation: none;        /* Animação desativada até a classe "typing" ser adicionada */
+    }
+    /* Quando a classe "typing" é adicionada, inicia o efeito máquina de escrever */
+    .msg-greeting.typing {
+      animation: typeWriter 1s steps(25, end) forwards, /* Revela o texto em 25 passos discretos */
+                 blinkCursor 0.7s step-end 5;           /* Cursor pisca 5 vezes depois */
+    }
+    @keyframes typeWriter {
+      from { width: 0;    } /* Sem largura = texto invisível */
+      to   { width: 100%; } /* Largura total = texto completamente visível */
+    }
+    @keyframes blinkCursor {
+      50% { border-color: transparent; } /* Cursor some na metade do ciclo (efeito de piscar) */
+    }
+
+    /* =====================================================
+       EDITE A MENSAGEM AQUI
+       ===================================================== */
+    /* Corpo principal da carta (texto da mensagem) */
+    .msg-body {
+      font-family: 'Dancing Script', cursive; /* Mesma fonte cursiva do título */
+      font-size: 1.22rem;
+      color: #3a1a28;         /* Marrom-rosado escuro para contraste com o fundo claro */
+      line-height: 2;         /* Espaçamento entre linhas generoso para facilitar leitura */
+      margin-bottom: 30px;
+    }
+
+    /* Assinatura no final da carta */
+    .msg-sign {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      color: #b03050;         /* Mesmo vermelho rosado do título */
+      font-weight: 700;
+      text-align: right;      /* Alinhada à direita (como uma assinatura real) */
+    }
+
+    /* Botão de fechar (X) no canto superior direito do card */
+    .close-btn {
+      position: absolute;
+      top: 14px; right: 18px; /* Posicionado no canto superior direito do card */
+      background: none;       /* Sem fundo */
+      border: none;           /* Sem borda */
+      font-size: 1.1rem;
+      color: #bbb;            /* Cinza claro no estado normal */
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;     /* Área de clique circular */
+      transition: color 0.2s, transform 0.25s, background 0.2s; /* Transições suaves no hover */
+    }
+    /* Efeito ao passar o mouse no botão de fechar */
+    .close-btn:hover {
+      color: #b03050;                          /* Muda para vermelho rosado */
+      transform: rotate(90deg) scale(1.2);     /* Gira 90° e aumenta levemente */
+      background: rgba(180,50,80,0.08);        /* Fundo rosado muito sutil */
+    }
+
+    /* ========= CONFETTI ========= */
+    .confetti {
+      position: fixed;        /* Posicionado em relação à tela (não ao documento) */
+      pointer-events: none;   /* Não interfere em cliques */
+      z-index: 99;            /* Fica acima de quase tudo, incluindo o overlay */
+      border-radius: 2px;     /* Levemente arredondado (alguns ficam circulares via JS) */
+      opacity: 0;             /* Começa invisível */
+      animation: fall linear forwards; /* Cai uma vez e para (forwards mantém o estado final) */
+    }
+    @keyframes fall {
+      /* Animação de queda do confetti */
+      0%   { transform: translateY(-30px) rotate(0deg)   scale(1);   opacity: 1; } /* Começa acima da tela, visível */
+      80%  { opacity: 1; }                                                          /* Ainda visível até 80% do caminho */
+      100% { transform: translateY(105vh) rotate(600deg) scale(0.6); opacity: 0; } /* Saiu pela base, girando e sumindo */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contêiner das estrelas — preenchido dinamicamente pelo JavaScript -->
+  <div id="stars"></div>
+
+  <!-- Contêiner das partículas flutuantes (emojis) — preenchido dinamicamente pelo JavaScript -->
+  <div id="particles"></div>
+
+  <!-- Texto de dica que aparece acima do envelope -->
+  <p id="hint">clique no envelope &nbsp;✨</p>
+
+  <!-- Envelope clicável — ao clicar chama a função openEnvelope() -->
+  <div id="envelopeContainer" onclick="openEnvelope()">
+    <div class="env-wrapper"><!-- Wrapper que contém todas as partes visuais do envelope -->
+      <div class="env-shadow"></div><!-- Sombra elíptica abaixo do envelope -->
+      <div class="env-body"><!-- Corpo retangular do envelope -->
+        <div class="env-letter" id="envLetter"><!-- Papel da carta visível dentro do envelope -->
+          <!-- Cinco linhas decorativas que simulam o texto da carta -->
+          <div class="letter-line"></div>
+          <div class="letter-line"></div>
+          <div class="letter-line"></div>
+          <div class="letter-line"></div>
+          <div class="letter-line"></div>
+        </div>
+      </div>
+      <div class="env-flap"></div><!-- Aba superior triangular que abre ao clicar -->
+      <div class="env-seal">💌</div><!-- Lacre com emoji que desaparece ao abrir -->
+    </div>
+  </div>
+
+  <!-- Overlay escuro que cobre a tela ao mostrar a mensagem -->
+  <div id="msgOverlay">
+    <div class="msg-card"><!-- Card branco com o conteúdo da carta -->
+      <!-- Botão X para fechar o overlay — chama closeMessage() ao clicar -->
+      <button class="close-btn" onclick="closeMessage()">✕</button>
+
+      <!-- Emojis decorativos no topo do card -->
+      <div class="msg-deco">✨ 💕 ✨</div>
+
+      <!-- =====================================================
+           TROQUE "Nome dela" pelo nome dela
+           ===================================================== -->
+      <!-- Saudação com efeito máquina de escrever — ativado pelo JavaScript -->
+      <div class="msg-greeting" id="greeting">Olá, Maria Eduarda 🌸</div>
+
+      <!-- =====================================================
+           EDITE O TEXTO DA CARTA AQUI
+           ===================================================== -->
+      <!-- Corpo da carta com o texto da mensagem -->
+      <div class="msg-body">
+        Existem coisas que a gente guarda no coração por tempo demais,
+        com medo de estragar algo precioso.<br><br><!-- <br><br> cria uma linha em branco entre os parágrafos -->
+        Mas hoje resolvi ser corajoso — porque você merece saber
+        o quanto você me inspira só de existir.<br><br>
+        Você tem um jeito único de iluminar os lugares que entra,
+        e eu tenho pensado muito nisso ultimamente. 🌷
+      </div>
+
+      <!-- =====================================================
+           TROQUE "Seu nome" pelo seu nome
+           ===================================================== -->
+      <!-- Assinatura alinhada à direita no final da carta -->
+      <div class="msg-sign">— Neto 💌</div>
+    </div>
+  </div>
+
+  <script>
+    /* ── Stars ── */
+    const starsEl = document.getElementById('stars'); // Seleciona o contêiner das estrelas no DOM
+
+    for (let i = 0; i < 90; i++) { // Loop que cria 90 estrelas
+      const s = document.createElement('div'); // Cria um novo elemento <div> para cada estrela
+      s.className = 'star'; // Aplica a classe CSS "star" para estilização e animação
+
+      const sz = Math.random() * 2.4 + 0.4; // Tamanho aleatório entre 0.4px e 2.8px
+
+      Object.assign(s.style, { // Define múltiplas propriedades de estilo de uma vez
+        width:  sz + 'px',     // Largura aleatória da estrela
+        height: sz + 'px',     // Altura igual à largura (forma circular)
+        top:  Math.random() * 100 + '%',  // Posição vertical aleatória (0% a 100% da tela)
+        left: Math.random() * 100 + '%',  // Posição horizontal aleatória (0% a 100% da tela)
+        animationDuration: (Math.random() * 3.5 + 1.8) + 's', // Duração do piscar entre 1.8s e 5.3s
+        animationDelay:    (Math.random() * 5)          + 's', // Atraso inicial aleatório até 5s
+      });
+
+      starsEl.appendChild(s); // Insere a estrela dentro do contêiner #stars
+    }
+
+    /* ── Particles ── */
+    const particlesEl = document.getElementById('particles'); // Seleciona o contêiner das partículas
+
+    // Array com os emojis usados como partículas flutuantes
+    const symbols = ['💕','✨','🌸','💫','🌷','⭐','💖','🌺','🦋'];
+
+    for (let i = 0; i < 20; i++) { // Loop que cria 20 partículas
+      const p = document.createElement('div'); // Cria um <div> para cada partícula
+      p.className = 'particle'; // Aplica a classe CSS "particle"
+
+      // Escolhe um emoji aleatório do array symbols
+      p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+      Object.assign(p.style, {
+        left:             Math.random() * 100 + '%',       // Posição horizontal aleatória
+        fontSize:         (Math.random() * 0.9 + 0.65) + 'rem', // Tamanho entre 0.65rem e 1.55rem
+        animationDuration: (Math.random() * 10 + 9) + 's',      // Duração da subida entre 9s e 19s
+        animationDelay:    (Math.random() * 10)     + 's',       // Atraso inicial aleatório até 10s
+      });
+
+      particlesEl.appendChild(p); // Insere a partícula no contêiner #particles
+    }
+
+    /* ── Envelope logic ── */
+    let opened = false; // Flag que controla se o envelope já foi aberto (evita abrir duas vezes)
+
+    function openEnvelope() {
+      if (opened) return; // Se já estiver aberto, sai da função imediatamente
+      opened = true;      // Marca como aberto para bloquear chamadas futuras
+
+      const container = document.getElementById('envelopeContainer'); // Seleciona o envelope
+      const hint      = document.getElementById('hint');              // Seleciona o texto de dica
+
+      container.style.cursor = 'default'; // Remove o cursor de ponteiro (não é mais clicável)
+      hint.style.opacity = '0';           // Torna o texto de dica invisível
+      hint.style.pointerEvents = 'none';  // Impede que o texto intercepte cliques
+
+      container.classList.add('opened'); // Adiciona a classe "opened" — dispara as animações CSS de abertura
+
+      // Aguarda 1500ms (tempo da carta subir) antes de mostrar a mensagem
+      setTimeout(showMessage, 1500);
+    }
+
+    function showMessage() {
+      const overlay  = document.getElementById('msgOverlay'); // Seleciona o overlay escuro
+      const greeting = document.getElementById('greeting');   // Seleciona o texto de saudação
+
+      overlay.classList.add('show'); // Adiciona a classe "show" — faz o overlay aparecer com fade in
+
+      // Aguarda 400ms (card já está aparecendo) antes de iniciar o efeito de digitação
+      setTimeout(() => {
+        greeting.classList.add('typing'); // Adiciona a classe "typing" — inicia a animação máquina de escrever
+      }, 400);
+
+      launchConfetti(); // Dispara o confetti ao mesmo tempo que a mensagem aparece
+    }
+
+    function closeMessage() {
+      // Remove a classe "show" do overlay — faz ele desaparecer com fade out
+      document.getElementById('msgOverlay').classList.remove('show');
+    }
+
+    /* ── Confetti ── */
+    function launchConfetti() {
+      // Array de cores vibrantes para os pedacinhos de confetti
+      const colors = ['#ff6b9d','#ff8c69','#ffd166','#06d6a0','#c77dff','#f72585','#4cc9f0'];
+      const count  = 70; // Quantidade total de confettis lançados
+
+      for (let i = 0; i < count; i++) { // Loop para criar cada confetti
+        setTimeout(() => { // Cada confetti é criado com um atraso de i*25ms (escalonado)
+
+          const c = document.createElement('div'); // Cria um <div> para o confetti
+          c.className = 'confetti'; // Aplica a classe CSS "confetti"
+
+          // 45% de chance de ser circular, 55% de ser retangular
+          const isCircle = Math.random() > 0.55;
+
+          Object.assign(c.style, {
+            left:            Math.random() * 100 + 'vw', // Posição horizontal aleatória em toda a largura da tela
+            top:             '-20px',                    // Começa 20px acima da tela (fora do campo de visão)
+            width:           (Math.random() * 7 + 5) + 'px',  // Largura entre 5px e 12px
+            height:          (Math.random() * 10 + 6) + 'px', // Altura entre 6px e 16px
+            background:      colors[Math.floor(Math.random() * colors.length)], // Cor aleatória
+            borderRadius:    isCircle ? '50%' : '2px', // Circular ou levemente arredondado
+            animationDuration: (Math.random() * 2 + 1.8) + 's', // Duração da queda entre 1.8s e 3.8s
+            animationDelay:    (Math.random() * 0.6)     + 's', // Pequeno atraso aleatório
+          });
+
+          document.body.appendChild(c); // Adiciona o confetti diretamente no body
+
+          // Remove o confetti do DOM após 4500ms (evita acúmulo de elementos na memória)
+          setTimeout(() => c.remove(), 4500);
+
+        }, i * 25); // Cada confetti é criado 25ms depois do anterior (cria efeito de explosão gradual)
+      }
+    }
+
+    /* Fecha o overlay ao clicar no fundo escuro (fora do card) */
+    document.getElementById('msgOverlay').addEventListener('click', function(e) {
+      // e.target é o elemento clicado; "this" é o próprio overlay
+      // Só fecha se o clique foi no fundo (overlay em si), não no card
+      if (e.target === this) closeMessage();
+    });
+  </script>
+</body>
+</html>
